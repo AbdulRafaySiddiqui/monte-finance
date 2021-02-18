@@ -1,0 +1,124 @@
+{
+    "contracts": {
+        "f:/Software Development/Dapps/monte-finance/contracts/IStaking.sol": {
+            "IStaking": {
+                "abi": [
+                    {
+                        "inputs": [],
+                        "name": "handleTaxDistribution",
+                        "outputs": [],
+                        "stateMutability": "payable",
+                        "type": "function"
+                    }
+                ],
+                "devdoc": {
+                    "kind": "dev",
+                    "methods": {},
+                    "version": 1
+                },
+                "evm": {
+                    "bytecode": {
+                        "linkReferences": {},
+                        "object": "",
+                        "opcodes": "",
+                        "sourceMap": ""
+                    },
+                    "deployedBytecode": {
+                        "immutableReferences": {},
+                        "linkReferences": {},
+                        "object": "",
+                        "opcodes": "",
+                        "sourceMap": ""
+                    },
+                    "gasEstimates": null,
+                    "methodIdentifiers": {
+                        "handleTaxDistribution()": "eb27cd21"
+                    }
+                },
+                "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"handleTaxDistribution\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"f:/Software Development/Dapps/monte-finance/contracts/IStaking.sol\":\"IStaking\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"f:/Software Development/Dapps/monte-finance/contracts/IStaking.sol\":{\"keccak256\":\"0x9af2dfca19bab24e55087b0e48d115a0e6ec2ed1baff83f790f7245716825c30\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://db9d83d62170e25ee1b8a14089e1c1f7892723a220b52bb5d750c710eb9a77b6\",\"dweb:/ipfs/QmVLm3C4FuKuWRJKTLBWYS73qZG1M2pgptwghDZPaapQxL\"]}},\"version\":1}",
+                "userdoc": {
+                    "kind": "user",
+                    "methods": {},
+                    "version": 1
+                }
+            }
+        }
+    },
+    "sources": {
+        "f:/Software Development/Dapps/monte-finance/contracts/IStaking.sol": {
+            "ast": {
+                "absolutePath": "f:/Software Development/Dapps/monte-finance/contracts/IStaking.sol",
+                "exportedSymbols": {
+                    "IStaking": [
+                        5
+                    ]
+                },
+                "id": 6,
+                "license": "MIT",
+                "nodeType": "SourceUnit",
+                "nodes": [
+                    {
+                        "id": 1,
+                        "literals": [
+                            "solidity",
+                            "^",
+                            "0.6",
+                            ".0"
+                        ],
+                        "nodeType": "PragmaDirective",
+                        "src": "35:23:0"
+                    },
+                    {
+                        "abstract": false,
+                        "baseContracts": [],
+                        "contractDependencies": [],
+                        "contractKind": "interface",
+                        "documentation": null,
+                        "fullyImplemented": false,
+                        "id": 5,
+                        "linearizedBaseContracts": [
+                            5
+                        ],
+                        "name": "IStaking",
+                        "nodeType": "ContractDefinition",
+                        "nodes": [
+                            {
+                                "body": null,
+                                "documentation": null,
+                                "functionSelector": "eb27cd21",
+                                "id": 4,
+                                "implemented": false,
+                                "kind": "function",
+                                "modifiers": [],
+                                "name": "handleTaxDistribution",
+                                "nodeType": "FunctionDefinition",
+                                "overrides": null,
+                                "parameters": {
+                                    "id": 2,
+                                    "nodeType": "ParameterList",
+                                    "parameters": [],
+                                    "src": "118:2:0"
+                                },
+                                "returnParameters": {
+                                    "id": 3,
+                                    "nodeType": "ParameterList",
+                                    "parameters": [],
+                                    "src": "137:0:0"
+                                },
+                                "scope": 5,
+                                "src": "88:50:0",
+                                "stateMutability": "payable",
+                                "virtual": false,
+                                "visibility": "external"
+                            }
+                        ],
+                        "scope": 6,
+                        "src": "62:79:0"
+                    }
+                ],
+                "src": "35:106:0"
+            },
+            "id": 0
+        }
+    }
+}
