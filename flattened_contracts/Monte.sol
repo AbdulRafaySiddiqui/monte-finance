@@ -889,10 +889,11 @@ contract Monte is Context, Ownable, ERC20 {
     bool public isTaxActive = true;
     mapping(address => bool) public isTaxless;
 
-    uint256 public minTokenBeforeSwap = 1e18;
+    uint256 public minTokenBeforeSwap = 1000e18;
     bool private inSwap;
-    bool public enableSwapOnBuy = true;
     bool public isSwapEnabled = false;
+    
+    uint256 public totalEthDistributed;
 
     event SwapedTokenForEth(uint256 ethAmount, uint256 tokenAmount);
 
@@ -907,14 +908,16 @@ contract Monte is Context, Ownable, ERC20 {
         uniswapV2Pair = IUniswapV2Factory(uniswapV2Router.factory())
             .createPair(address(this), uniswapV2Router.WETH());
         _mint(_msgSender(),10_000_000e18);
+        isTaxless[address(this)] = true;
+        isTaxless[_msgSender()] = true;
     }
 
     function setTaxActive(bool _value) external onlyOwner {
         isTaxActive = _value;
     }
 
-    function setTaxless(bool _value) external onlyOwner {
-        isTaxless[_msgSender()] = _value;
+    function setTaxless(address account, bool _value) external onlyOwner {
+        isTaxless[account] = _value;
     }
 
     function setTaxFee(uint256 _taxFee) external onlyOwner {
@@ -922,18 +925,18 @@ contract Monte is Context, Ownable, ERC20 {
         taxFee = _taxFee;
     }
 
-    function setStakingPool(address _stakingPool) external onlyOwner  {
+    function setStakingPool(address _stakingPool) external onlyOwner {
         isTaxless[stakingPool] = false;
         isTaxless[_stakingPool] = true;
         stakingPool = _stakingPool;
     }
     
-    function setEnableSwapOnBuy(bool _value) external onlyOwner {
-        enableSwapOnBuy = _value;
-    }
-    
     function setSwapEnabled(bool _value) external onlyOwner {
         isSwapEnabled = _value;
+    }
+    
+    function setMinTokenBeforeSwap(uint256 amount) external onlyOwner {
+        minTokenBeforeSwap = amount;
     }
     
     function transferFrom(address sender, address recipient, uint amount) public override returns (bool) {
@@ -945,8 +948,7 @@ contract Monte is Context, Ownable, ERC20 {
     }
 
     function _transfer(address sender, address recipient, uint256 amount) internal override {
-        if(isSwapEnabled && !inSwap){
-            if(enableSwapOnBuy || sender != uniswapV2Pair)
+        if(isSwapEnabled && !inSwap && sender != uniswapV2Pair){
             swapAndDistribute();
         }
         uint256 transferAmount = amount;
@@ -981,8 +983,10 @@ contract Monte is Context, Ownable, ERC20 {
         
         ethAmount = address(this).balance.sub(ethAmount);
         emit SwapedTokenForEth(tokenAmount,ethAmount);
-
-        IStaking(stakingPool).distribute{value: address(this).balance}();
+        
+        uint256 amountToDistribute = address(this).balance;
+        totalEthDistributed = totalEthDistributed.add(amountToDistribute);
+        IStaking(stakingPool).distribute{value: amountToDistribute}();
     }
     
     receive() external payable {}
