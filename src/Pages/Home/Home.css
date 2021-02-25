@@ -1,0 +1,10 @@
+.w-col-6 {
+  cursor: pointer;
+}
+.w--current{
+    /* background: #E1B788; */
+    /* background: white; */
+}
+.sidebar-navbar-link.link-home{
+    color: none;
+}
