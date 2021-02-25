@@ -1,15 +1,22 @@
-import React from 'react'
+import  React, {useState} from 'react'
 import { Link } from 'react-router-dom'
 import "./../css/components.css"
 import "./../css/normalize.css"
 import "./../css/zzz-ff9a17.css"
 import "./Stake.css"
 import Input from '@material-ui/core/Input';
+import Unstaking from '../../Components/Unstaking/Unstaking'
+import Staking from './../../Components/Staking/Staking';
 
-// import zzz-ff9a17 as js from "./../js/zzz-ff9a17"
 
+// var stakeToggle = (e) => {
+//   console.log(e)
+//   setUnstake(e)
+// }
 
 const Stake = () => {
+  const [unstake, setUnstake] = useState(false);
+
     return (
         <div className="body">
             <div className="app-layout">
@@ -23,9 +30,9 @@ const Stake = () => {
           <nav role="navigation" className="sidebar-navbar-menu w-nav-menu">
             <div className="sidebar-navbar-body">
               <div className="sidebar-navbar-body-container">
-                  <p className="sidebar-navbar-link link-home w-nav-link"><Link to="/">Home</Link></p>
+                  <Link to="/"><p className="sidebar-navbar-link link-home w-nav-link">Home</p></Link>
                 {/* <a href="../index.html" className="sidebar-navbar-link link-home w-nav-link">Home<br></br></a> */}
-                <p className="sidebar-navbar-link w-nav-link w--current"><Link to="/stake">Dashboard</Link></p>
+                <Link to="/stake"><p className="sidebar-navbar-link w-nav-link w--current">Dashboard</p></Link>
                 {/* <a href="../dashboards/staking.html" aria-current="page" className="sidebar-navbar-link w-nav-link w--current">Dashboard<br></br></a> */}
                 <a href="../projects.html" className="sidebar-navbar-link link-projects w-nav-link">Projects</a>
               </div>
@@ -134,7 +141,7 @@ const Stake = () => {
                 </div>
               </div>
               <div>
-              
+              {/* 
               <div className="col w-col w-col-4 hidden-card">
                     <div className="card text-center">
                       <div className="card-heading center">
@@ -146,30 +153,26 @@ const Stake = () => {
 
                   <div className="col w-col w-col-4 visible-card">
                     <div className="card text-center">
-                        {/* <div className="column-3 w-col w-col-4">
-                            <a href="#" className="button-3 w-button">Unstake</a>
-                        </div>  */}
-                        {/* <h1>STAKE PNL</h1> */}
                         <p>STAKE PNL</p>
-                        {/* <h5>STAKE PNL</h5>
-                         */}
                         <Input className="amount-input" placeholder="Enter amount"></Input>
                         <div className="toggle-stake stake">STAKE</div>
                         <div className="toggle-stake unstake">UNSTAKE</div>
                     </div>
                   </div>
+                */}
+                {unstake ? <Unstaking/> : <Staking/>}
+                
 
                 <div className="w-row">
-                  {/* <div className="column-2 w-col w-col-4">
-                    <a href="#" className="button-3 w-button">Stake</a>
+                  <div className="column-2 w-col w-col-4">
+                    <a  id="stake-id" onClick={(e) => setUnstake(false)} className="button-3 w-button">Stake</a>
                   </div>
                   <div className="column-3 w-col w-col-4">
-                    <a href="#" className="button-3 w-button">Unstake</a>
+                    <a id="unstake-id" onClick={(e) => setUnstake(true)} className="button-3 w-button">Unstake</a>
                   </div> 
-                  <div className="column-4 w-col w-col-4">
+                  {/* <div className="column-4 w-col w-col-4">
                     <a href="#" className="button-4 w-button">Rewards</a>
                   </div> */}
-
                 </div>
               </div>
             </div>

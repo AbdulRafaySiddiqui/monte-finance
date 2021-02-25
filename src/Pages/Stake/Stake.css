@@ -25,6 +25,13 @@ a:hover{
 }
 .amount-input{
     margin-bottom: 5px;
+    color: black;
+    border: none;
+    width: 100%;
+}
+Input {
+    border: none;
+    color: black;
 }
 .toggle-stake{
     cursor: pointer;
