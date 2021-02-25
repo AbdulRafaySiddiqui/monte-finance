@@ -17,7 +17,7 @@ const Staking = () => {
                             <a href="#" className="button-3 w-button">Unstake</a>
                         </div>  */}
                         <p>STAKE PNL</p>
-                        <StyledTextField className="amount-input"  varient="outlined" placeholder="Enter amount"></StyledTextField>
+                        <StyledTextField className="amount-input" placeholder="Enter amount"></StyledTextField>
                         <div className="toggle-stake stake">STAKE</div>
                         <div className="toggle-stake unstake">MAX</div>
                     </div>
