@@ -1,3 +1,5 @@
+
+
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.5.16;
@@ -184,11 +186,6 @@ contract Staking is Context, Ownable {
 
     constructor(IERC20 _token) public {
         token = _token;
-    }
-
-    function setToken(IERC20 _token) public onlyOwner {
-        token = _token;
-        startTime = block.timestamp;
     }
 
     function setStartTime(uint _startTime) external onlyOwner {
