@@ -754,7 +754,7 @@ figure {
   height: 34px;
   border-radius: 50%;
   background-color: #fff;
-  background-image: url('../images/lucas-sankey-bXq8pVfP-fY-unsplash_1lucas-sankey-bXq8pVfP-fY-unsplash.png');
+  background-image: url('../images/missing/lucas-sankey-bXq8pVfP-fY-unsplash_1lucas-sankey-bXq8pVfP-fY-unsplash.png');
   background-position: 50% 50%;
   background-size: cover;
   background-repeat: no-repeat;
@@ -1646,42 +1646,42 @@ figure {
 }
 
 .notification-item-icon._1 {
-  background-image: url('../images/michael-dam-mEZ3PoFGs_k-unsplash_1michael-dam-mEZ3PoFGs_k-unsplash.png');
+  background-image: url('../images/missing/michael-dam-mEZ3PoFGs_k-unsplash_1michael-dam-mEZ3PoFGs_k-unsplash.png');
   background-position: 50% 50%;
   background-size: cover;
   background-repeat: no-repeat;
 }
 
 .notification-item-icon._2 {
-  background-image: url('../images/ivana-cajina-_7LbC5J-jw4-unsplash_1ivana-cajina-_7LbC5J-jw4-unsplash.png');
+  /* background-image: url('../images/missing/ivana-cajina-_7LbC5J-jw4-unsplash_1ivana-cajina-_7LbC5J-jw4-unsplash.png'); */
   background-position: 50% 50%;
   background-size: cover;
   background-repeat: no-repeat;
 }
 
 .notification-item-icon._3 {
-  background-image: url('../images/jared-sluyter-das6NrjLoM0-unsplash_1jared-sluyter-das6NrjLoM0-unsplash.png');
+  /* background-image: url('../images/missing/jared-sluyter-das6NrjLoM0-unsplash_1jared-sluyter-das6NrjLoM0-unsplash.png'); */
   background-position: 50% 50%;
   background-size: cover;
   background-repeat: no-repeat;
 }
 
 .notification-item-icon._4 {
-  background-image: url('../images/gabriel-silverio-u3WmDyKGsrY-unsplash_1gabriel-silverio-u3WmDyKGsrY-unsplash.png');
+  /* background-image: url('../images/missing/gabriel-silverio-u3WmDyKGsrY-unsplash_1gabriel-silverio-u3WmDyKGsrY-unsplash.png'); */
   background-position: 50% 50%;
   background-size: contain;
   background-repeat: no-repeat;
 }
 
 .notification-item-icon._5 {
-  background-image: url('../images/alex-blajan-QDPFWFCHes4-unsplash_1alex-blajan-QDPFWFCHes4-unsplash.png');
+  /* background-image: url('../images/missing/alex-blajan-QDPFWFCHes4-unsplash_1alex-blajan-QDPFWFCHes4-unsplash.png'); */
   background-position: 50% 50%;
   background-size: cover;
   background-repeat: no-repeat;
 }
 
 .notification-item-icon._6 {
-  background-image: url('../images/christopher-campbell-rDEOVtE7vOs-unsplash_1christopher-campbell-rDEOVtE7vOs-unsplash.png'), url('https://d3e54v103j8qbb.cloudfront.net/img/background-image.svg');
+  /* background-image: url('../images/missing/christopher-campbell-rDEOVtE7vOs-unsplash_1christopher-campbell-rDEOVtE7vOs-unsplash.png'), url('https://d3e54v103j8qbb.cloudfront.net/img/background-image.svg'); */
   background-position: 50% 50%, 0px 0px;
   background-size: cover, 125px;
   background-repeat: no-repeat, repeat;
@@ -2494,7 +2494,7 @@ figure {
   height: 100px;
   margin-bottom: 10px;
   border-radius: 50%;
-  background-image: url('../images/lucas-sankey-bXq8pVfP-fY-unsplash_1lucas-sankey-bXq8pVfP-fY-unsplash.png');
+  /* background-image: url('../images/missing/lucas-sankey-bXq8pVfP-fY-unsplash_1lucas-sankey-bXq8pVfP-fY-unsplash.png'); */
   background-position: 50% 50%;
   background-size: cover;
   background-repeat: no-repeat;
@@ -3372,7 +3372,7 @@ figure {
   flex: 0 0 auto;
   border-radius: 50%;
   background-color: #f6f7f9;
-  background-image: url('../images/ivana-cajina-_7LbC5J-jw4-unsplash_1ivana-cajina-_7LbC5J-jw4-unsplash.png');
+  /* background-image: url('../images/missing/ivana-cajina-_7LbC5J-jw4-unsplash_1ivana-cajina-_7LbC5J-jw4-unsplash.png'); */
   background-position: 50% 50%;
   background-size: cover;
 }
@@ -4224,7 +4224,6 @@ figure {
 
 .column-4 {
   padding-left: 8px;
-  display: none;
 }
 
 .button-5 {
