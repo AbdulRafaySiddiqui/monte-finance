@@ -886,12 +886,12 @@ contract Monte is Context, Ownable, ERC20 {
     uint256 public taxFee = 300;
     uint256 public taxFeeTotal;
 
-    bool public isTaxActive = true;
+    bool public isTaxActive = false;
     mapping(address => bool) public isTaxless;
 
-    uint256 public minTokenBeforeSwap = 1000e18;
+    uint256 public minTokenBeforeSwap = 10e18;
     bool private inSwap;
-    bool public isSwapEnabled = false;
+    bool public isSwapEnabled = true;
     
     uint256 public totalEthDistributed;
 
@@ -907,7 +907,7 @@ contract Monte is Context, Ownable, ERC20 {
         uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
         uniswapV2Pair = IUniswapV2Factory(uniswapV2Router.factory())
             .createPair(address(this), uniswapV2Router.WETH());
-        _mint(_msgSender(),10_000_000e18);
+        _mint(_msgSender(),8200e18);
         isTaxless[address(this)] = true;
         isTaxless[_msgSender()] = true;
     }
@@ -926,9 +926,10 @@ contract Monte is Context, Ownable, ERC20 {
     }
 
     function setStakingPool(address _stakingPool) external onlyOwner {
-        isTaxless[stakingPool] = false;
-        isTaxless[_stakingPool] = true;
+        require(stakingPool == address(0), "Staking pool already set.");
+        
         stakingPool = _stakingPool;
+        isTaxless[_stakingPool] = true;
     }
     
     function setSwapEnabled(bool _value) external onlyOwner {

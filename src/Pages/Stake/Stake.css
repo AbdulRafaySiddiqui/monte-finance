@@ -56,3 +56,9 @@ Input {
     background-color: black;
     color: #E1B788;
 }
+
+.bold-heading{
+    color: black;
+    font-weight: bold;
+    font-size: large;
+}
