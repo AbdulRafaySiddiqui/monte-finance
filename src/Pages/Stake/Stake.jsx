@@ -287,7 +287,7 @@ const Stake = () => {
             <div className="app-main-layout-header">
               <div className="app-main-layout-wrapper header">
                 <div className="page-heading">
-                  <h2>Staking Dashboard</h2>
+                  <h2>Dashboard</h2>
                   <button
                     disabled={wallet.status === 'connected' ? true : false}
                     onClick={() => wallet.connect()}>{
