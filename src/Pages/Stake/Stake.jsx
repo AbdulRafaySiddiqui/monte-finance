@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import logo from "./../images/monte-finance-01.png";
 import smallLogo from "./../images/artboard-color-small.svg";
 import { Link } from 'react-router-dom'
@@ -9,10 +9,13 @@ import "./Stake.css"
 import { TextField } from '@material-ui/core';
 import styled from 'styled-components'
 
-// var stakeToggle = (e) => {
-//   console.log(e)
-//   setUnstake(e)
-// }
+import { useWallet } from 'use-wallet'
+import Web3 from 'web3';
+import tokenABI from './../../contractABI/token.json'
+import stakingABI from './../../contractABI/staking.json'
+
+const TOKEN_ADDRESS = '0x9ac37707249A5EbC9768349A742dF668A7DA60c5';
+const STAKE_ADDRESS = '0x1B1b9E0774d3353772040a5b5500BAe55b377Cc2';
 
 const StyledTextField = styled(TextField)`
     & .MuiInput-underline:after {
@@ -21,7 +24,224 @@ const StyledTextField = styled(TextField)`
 
 `;
 const Stake = () => {
-  const [unstake, setUnstake] = useState(false);
+  const [isStake, setIsStake] = useState(false);
+  const [web3, setWeb3] = useState(null);
+  const [error, setError] = useState(null);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isWithdrawing, setIsWithdrawing] = useState(false);
+  const [isStaking, setIsStaking] = useState(false);
+  const [isUnstaking, setIsUnstaking] = useState(false);
+
+  const [stakeAmount, setStakeAmount] = useState('');
+  const [unstakeAmount, setUnstakeAmount] = useState('');
+
+  const [stakeAmountError, setStakeAmountError] = useState(null);
+  const [unstakeAmountError, setUnstakeAmountError] = useState(null);
+
+  const [maxStake, setMaxStake] = useState(false);
+  const [maxUnstake, setMaxUnstake] = useState(false);
+
+  const [summary, setSummary] = useState({
+    rewards: 0,
+    walletBalance: 0,
+    stakedAmount: 0,
+    totalStaked: 0,
+    totalStakers: 0,
+    ethDistributed: 0,
+    totalSupply: 0
+  });
+
+  const wallet = useWallet();
+
+  useEffect(() => {
+    if (wallet.status === 'connected') {
+      setWeb3(new Web3(wallet.ethereum));
+      loadSummary(new Web3(wallet.ethereum));
+    }
+  }, [wallet]);
+
+
+  const loadSummary = async (ethereum) => {
+    setIsLoading(true);
+
+    const token = new ethereum.eth.Contract(tokenABI, TOKEN_ADDRESS);
+    const stake = new ethereum.eth.Contract(stakingABI, STAKE_ADDRESS);
+
+    const data = { rewards: 0, walletBalance: 0, stakedAmount: 0, totalStaked: 0, totalStakers: 0, ethDistributed: 0, totalSupply: 0 };
+    data.walletBalance = await token.methods.balanceOf(wallet.account).call();
+    data.totalSupply = await token.methods.totalSupply().call();
+    data.stakedAmount = await stake.methods.stakeValue(wallet.account).call();
+    data.totalStaked = await stake.methods.totalStaked().call();
+    data.totalStakers = await stake.methods.totalStakers().call();
+    data.rewards = await stake.methods.dividendsOf(wallet.account).call();
+    data.ethDistributed = await stake.methods.totalDistributions().call();
+
+    setSummary(data);
+
+    setIsLoading(false);
+  }
+
+  const stake = () => {
+    let amount;
+    if (maxStake) {
+      amount = summary.walletBalance;
+    } else {
+      amount = web3.utils.toWei(stakeAmount);
+    }
+
+    if (parseFloat(amount) > parseFloat(summary.walletBalance)) return;
+
+    setIsStaking(true);
+
+    const stake = new web3.eth.Contract(stakingABI, STAKE_ADDRESS);
+
+    stake.methods.stake(amount).send({ from: wallet.account })
+      .on('transactionHash', function (hash) {
+        console.log(hash)
+      })
+      .on('confirmation', function (confirmationNumber, receipt) {
+        setIsStaking(false);
+      })
+      .on('error', function (error) {
+        setIsStaking(false);
+        if (!error.toString().includes("-32601")) {
+          if (error.message) {
+            return setError(error.message);
+          }
+          setError(error)
+        }
+      })
+      .catch((error) => {
+        setIsStaking(false);
+        if (!error.toString().includes("-32601")) {
+          if (error.message) {
+            return setError(error.message)
+          }
+          setError(error)
+        }
+      });
+  }
+
+  const unstake = () => {
+    let amount;
+    if (maxUnstake) {
+      console.log("max")
+      amount = summary.totalStaked;
+    } else {
+      amount = web3.utils.toWei(unstakeAmount);
+    }
+
+    if (parseFloat(amount) > parseFloat(summary.totalStaked)) return;
+
+    setIsUnstaking(true);
+
+    const stake = new web3.eth.Contract(stakingABI, STAKE_ADDRESS);
+
+    stake.methods.unstake(amount).send({ from: wallet.account })
+      .on('transactionHash', function (hash) {
+        console.log(hash)
+      })
+      .on('confirmation', function (confirmationNumber, receipt) {
+        setIsUnstaking(false);
+      })
+      .on('error', function (error) {
+        setIsUnstaking(false);
+        if (!error.toString().includes("-32601")) {
+          if (error.message) {
+            return setError(error.message);
+          }
+          setError(error)
+        }
+      })
+      .catch((error) => {
+        setIsUnstaking(false);
+        if (!error.toString().includes("-32601")) {
+          if (error.message) {
+            return setError(error.message)
+          }
+          setError(error)
+        }
+      });
+  }
+
+  const withdraw = () => {
+    if (summary.rewards > 0) {
+
+      setIsWithdrawing(true);
+
+      const stake = new web3.eth.Contract(stakingABI, STAKE_ADDRESS);
+
+      stake.methods.withdraw(summary.rewards).send({ from: wallet.account })
+        .on('transactionHash', function (hash) {
+          console.log(hash)
+        })
+        .on('confirmation', function (confirmationNumber, receipt) {
+          setIsWithdrawing(false);
+        })
+        .on('error', function (error) {
+          setIsWithdrawing(false);
+          if (!error.toString().includes("-32601")) {
+            if (error.message) {
+              return setError(error.message);
+            }
+            setError(error)
+          }
+        })
+        .catch((error) => {
+          setIsWithdrawing(false);
+          if (!error.toString().includes("-32601")) {
+            if (error.message) {
+              return setError(error.message)
+            }
+            setError(error)
+          }
+        });
+    }
+  }
+
+  const onStakeAmountChange = (event) => {
+    setMaxStake(false);
+    const amount = event.target.value;
+    setStakeAmount(amount ?? 0);
+    if (!amount || amount === '' || amount === '0') return;
+    const { walletBalance } = summary;
+    if (parseFloat(web3.utils.toWei(amount)) > walletBalance)
+      setStakeAmountError("Invalid Amount!");
+    else
+      setStakeAmountError(null);
+  }
+
+  const onUnstakeAmountChange = (event) => {
+    setMaxUnstake(false);
+    const amount = event.target.value;
+    setUnstakeAmount(amount ?? '0');
+    if (!amount || amount === '' || amount === '0') return;
+    const { stakedAmount } = summary;
+    if (parseFloat(web3.utils.toWei(amount)) > stakedAmount)
+      setUnstakeAmountError("Invalid Amount!");
+    else
+      setUnstakeAmountError(null);
+  }
+
+  const selectMaxSelect = () => {
+    if (isStake) {
+      setStakeAmount(displayValue(summary.walletBalance))
+      setStakeAmountError(null);
+      setMaxStake(true);
+    } else {
+      setUnstakeAmount(displayValue(summary.stakedAmount))
+      setUnstakeAmountError(null);
+      setMaxUnstake(true);
+    }
+  }
+
+  const displayValue = (amount, decimals = 2) => {
+    if (web3 === null)
+      return 0;
+
+    return parseFloat(web3.utils.fromWei(amount.toString(), "ether")).toFixed(decimals);
+  }
 
   return (
     <div className="body">
@@ -68,6 +288,23 @@ const Stake = () => {
               <div className="app-main-layout-wrapper header">
                 <div className="page-heading">
                   <h2>Staking Dashboard</h2>
+                  <button
+                    disabled={wallet.status === 'connected' ? true : false}
+                    onClick={() => wallet.connect()}>{
+                      wallet.status === 'connected' ?
+                        wallet.account.substring(0, 10) + '...'
+                        : "METAMASK"}
+                  </button>
+                  {
+                    isLoading ?
+                      <p>LOADING....</p> :
+                      isWithdrawing ?
+                        <p>WITHDRAWING....</p>
+                        : isStaking ?
+                          <p>STAKING....</p>
+                          : isUnstaking ?
+                            <p>UNSTAKING....</p> : <p></p>
+                  }
                 </div>
                 <div className="page-tabs-menu">
                   {/* <a href="../dashboards/staking.html" aria-current="page" className="page-tab-link traffic w--current">Staking</a> */}
@@ -76,137 +313,143 @@ const Stake = () => {
               </div>
             </div>
             <div className="app-main-layout-wrapper">
-              <div className="app-main-layout-content">
-                <div className="page-tabs-content">
-                  <div className="card text-center">
-                    <div className="card-heading center">
-                      <div className="caption mb-0">rewards</div>
-                    </div>
-                    {/* <div className="key-price-value">545,607.03</div> */}
-                    {/* <TextField label="Enter Amount"/> */}
-                    {/* <Input type="number" placeholder="Enter Amount"></Input> */}
-                    <h3>555,555,555</h3>
-                    <a href="#" className="button-5 w-button">Withdraw</a>
-                    {/* <a href="#" className="button-5 w-button">Reinvest</a> */}
-                  </div>
-                  <br />
-                  <div className="section">
-                    <div className="flex row w-row">
-                      <div className="col w-col w-col-4">
-                        <div className="card text-center">
-                          <div className="card-heading center">
-                            <div className="caption mb-0">Your Staked PNL</div>
-                          </div>
-                          <div className="key-price-value">10,000</div>
+              {
+                wallet.status === 'connected' ?
+                  <div className="app-main-layout-content">
+                    <div className="page-tabs-content">
+                      <div className="card text-center">
+                        <div className="card-heading center">
+                          <div className="caption mb-0">rewards</div>
                         </div>
+                        {/* <div className="key-price-value">545,607.03</div> */}
+                        {/* <TextField label="Enter Amount"/> */}
+                        {/* <Input type="number" placeholder="Enter Amount"></Input> */}
+                        <h3>{displayValue(summary.rewards, 18)} ETH</h3>
+                        <a href="#" className="button-5 w-button" onClick={withdraw}>Withdraw</a>
+                        {/* <a href="#" className="button-5 w-button">Reinvest</a> */}
                       </div>
-                      <div className="col w-col w-col-4">
-                        <div className="card text-center">
-                          <div className="card-heading center">
-                            <div className="caption mb-0">Your PNL Wallet</div>
-                          </div>
-                          <div className="key-price-value">76,400</div>
-                        </div>
-                      </div>
-                      <div className="col w-col w-col-4">
-                        <div className="card text-center">
-                          <div className="card-heading center">
-                            <div className="caption mb-0">eth price (usd)</div>
-                          </div>
-                          <div className="key-price-value">1700</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="section">
-                    <div className="flex row w-row">
-                      <div className="col w-col w-col-4">
-                        <div className="card text-center">
-                          <div className="card-heading center">
-                            <div className="caption mb-0">total pnl stakers</div>
-                          </div>
-                          <div className="key-price-value">4</div><img src="../images/Chart-Metric.svg" width="400" alt="" className="single-data-image" />
-                        </div>
-                      </div>
-                      <div className="col w-col w-col-4">
-                        <div className="card text-center">
-                          <div className="card-heading center">
-                            <div className="caption mb-0">total staked mnt</div>
-                          </div>
-                          <div className="key-price-value">545,607.03</div><img src="../images/Chart-Metric-Green.svg" width="400" alt="" className="single-data-image" />
-                        </div>
-                      </div>
-                      <div className="col w-col w-col-4">
-                        <div className="card text-center">
-                          <div className="card-heading center">
-                            <div className="caption mb-0">total mnt supply</div>
-                          </div>
-                          <div className="key-price-value">0</div><img src="../images/Chart-Metric-Grey.svg" width="400" alt="" className="single-data-image" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    {/* 
-              <div className="col w-col w-col-4 hidden-card">
-                    <div className="card text-center">
-                      <div className="card-heading center">
-                        <div className="caption mb-0">Your Staked PNL</div>
-                      </div>
-                      <div className="key-price-value">10,000</div>
-                    </div>
-                  </div>
+                      <br />
 
-                  <div className="col w-col w-col-4 visible-card">
-                    <div className="card text-center">
-                        <p>STAKE PNL</p>
-                        <Input className="amount-input" placeholder="Enter amount"></Input>
-                        <div className="toggle-stake stake">STAKE</div>
-                        <div className="toggle-stake unstake">UNSTAKE</div>
-                    </div>
-                  </div>
-                */}
-                    {
-                      unstake ?
-                        <div className="col w-col w-col-4 visible-card">
-                          <div className="card text-center">
-                            {/* <div className="column-3 w-col w-col-4">
+                      {/* SUMMARY */}
+
+                      <div className="section">
+                        <div className="flex row w-row">
+                          <div className="col w-col w-col-4">
+                            <div className="card text-center">
+                              <div className="card-heading center">
+                                <div className="caption mb-0">Your Staked MNT</div>
+                              </div>
+                              <div className="key-price-value">{displayValue(summary.stakedAmount)}</div>
+                            </div>
+                          </div>
+                          <div className="col w-col w-col-4">
+                            <div className="card text-center">
+                              <div className="card-heading center">
+                                <div className="caption mb-0">Your MNT Wallet</div>
+                              </div>
+                              <div className="key-price-value">{displayValue(summary.walletBalance)}</div>
+                            </div>
+                          </div>
+                          <div className="col w-col w-col-4">
+                            <div className="card text-center">
+                              <div className="card-heading center">
+                                <div className="caption mb-0">eth distributed</div>
+                              </div>
+                              <div className="key-price-value">{displayValue(summary.ethDistributed)}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="section">
+                        <div className="flex row w-row">
+                          <div className="col w-col w-col-4">
+                            <div className="card text-center">
+                              <div className="card-heading center">
+                                <div className="caption mb-0">total mnt stakers</div>
+                              </div>
+                              <div className="key-price-value">{displayValue(summary.totalStakers)}</div><img src="../images/Chart-Metric.svg" width="400" alt="" className="single-data-image" />
+                            </div>
+                          </div>
+                          <div className="col w-col w-col-4">
+                            <div className="card text-center">
+                              <div className="card-heading center">
+                                <div className="caption mb-0">total staked mnt</div>
+                              </div>
+                              <div className="key-price-value">{displayValue(summary.totalStaked)}</div><img src="../images/Chart-Metric-Green.svg" width="400" alt="" className="single-data-image" />
+                            </div>
+                          </div>
+                          <div className="col w-col w-col-4">
+                            <div className="card text-center">
+                              <div className="card-heading center">
+                                <div className="caption mb-0">total mnt supply</div>
+                              </div>
+                              <div className="key-price-value">{displayValue(summary.totalSupply)}</div><img src="../images/Chart-Metric-Grey.svg" width="400" alt="" className="single-data-image" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+
+                        {/* STAKE / UNSTAKE  */}
+                        {
+                          isStake ?
+                            <div className="col w-col w-col-4 visible-card">
+                              <div className="card text-center">
+                                {/* <div className="column-3 w-col w-col-4">
                             <a href="#" className="button-3 w-button">Unstake</a>
                         </div>  */}
-                            <p className="boldHeading">STAKE MNT</p>
-                            <StyledTextField className="amount-input" placeholder="Enter amount"></StyledTextField>
-                            <div className="toggle-stake stake">STAKE</div>
-                            <div className="toggle-stake unstake">MAX</div>
-                          </div>
-                        </div>
-                        : <div className="col w-col w-col-4 visible-card">
-                          <div className="card text-center">
-                            {/* <div className="column-3 w-col w-col-4">
-                            <a href="#" className="button-3 w-button">Unstake</a>
-                        </div>  */}
-                            <p className="boldHeading">UNSTAKE MNT</p>
-                            <StyledTextField className="amount-input" placeholder="Enter amount"></StyledTextField>
-                            <div className="toggle-stake stake">UNSTAKE</div>
-                            <div className="toggle-stake unstake">MAX</div>
-                          </div>
-                        </div>
-                    }
+                                <p className="boldHeading">STAKE MNT</p>
+                                <StyledTextField
+                                  id='value'
+                                  className="amount-input"
+                                  placeholder="Enter amount"
+                                  onChange={onStakeAmountChange}
+                                  value={stakeAmount}
+                                  error={stakeAmountError}></StyledTextField>
+                                <div className="toggle-stake stake" onClick={stake}>STAKE</div>
+                                <div className="toggle-stake unstake" onClick={selectMaxSelect}>MAX</div>
+                              </div>
+                            </div>
+                            : <div className="col w-col w-col-4 visible-card">
+                              <div className="card text-center">
+                                <p className="boldHeading">UNSTAKE MNT</p>
+                                <StyledTextField
+                                  id='value'
+                                  className="amount-input"
+                                  placeholder="Enter amount"
+                                  onChange={onUnstakeAmountChange}
+                                  value={unstakeAmount}
+                                  error={unstakeAmountError}></StyledTextField>
+                                <div className="toggle-stake stake" onClick={unstake}>UNSTAKE</div>
+                                <div className="toggle-stake unstake" onClick={selectMaxSelect}>MAX</div>
+                              </div>
+                            </div>
+                        }
 
 
-                    <div className="w-row">
-                      <div className="column-2 w-col w-col-4">
-                        <a id="stake-id" onClick={(e) => setUnstake(false)} className="button-3 w-button">Stake</a>
+                        <div className="w-row">
+                          <div className="column-2 w-col w-col-4">
+                            <a id="stake-id" onClick={(e) => setIsStake(true)} className="button-3 w-button">Stake</a>
+                          </div>
+                          <div className="column-3 w-col w-col-4">
+                            <a id="unstake-id" onClick={(e) => setIsStake(false)} className="button-3 w-button">Unstake</a>
+                          </div>
+                        </div>
                       </div>
-                      <div className="column-3 w-col w-col-4">
-                        <a id="unstake-id" onClick={(e) => setUnstake(true)} className="button-3 w-button">Unstake</a>
-                      </div>
-                      {/* <div className="column-4 w-col w-col-4">
-                    <a href="#" className="button-4 w-button">Rewards</a>
-                  </div> */}
                     </div>
                   </div>
-                </div>
-              </div>
+                  : <div className="app-main-layout-content">
+                    <div className="page-tabs-content">
+                      <div className="card text-center">
+                        <div className="card-heading center">
+                          <div className="caption mb-0">Please connect your wallet to use the Dapp</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              }
+
+              {/* FOOTER */}
               <div className="footer">
                 <div className="w-row">
                   <div className="w-col w-col-6">
