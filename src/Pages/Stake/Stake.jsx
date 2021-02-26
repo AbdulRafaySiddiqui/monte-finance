@@ -1,23 +1,29 @@
-import  React, {useState} from 'react'
+import  React, {Fragment, useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
 import "./../css/components.css"
 import "./../css/normalize.css"
 import "./../css/zzz-ff9a17.css"
 import "./Stake.css"
-import Input from '@material-ui/core/Input';
+// import Input from '@material-ui/core/Input';
 import Unstaking from '../../Components/Unstaking/Unstaking'
 import Staking from './../../Components/Staking/Staking';
+import { CircleLoader } from "react-spinners"
 
 
-// var stakeToggle = (e) => {
-//   console.log(e)
-//   setUnstake(e)
-// }
 
 const Stake = () => {
   const [unstake, setUnstake] = useState(false);
+  const [loader, setLoader] = useState(true);
 
-    return (
+  useEffect(() => {
+    setTimeout(() => { setLoader(false)}, 700);
+  }, [ ])
+  
+  return (
+      <Fragment>
+        {loader && <CircleLoader className="css-l4r88c dashboard-loader" size={44} color="chocolate"/>}
+
+        {!loader && 
         <div className="body">
             <div className="app-layout">
     <div className="app-nav-layout">
@@ -196,6 +202,8 @@ const Stake = () => {
   <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=6034587d924053386f0cc996" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
   <script src="../js/zzz-ff9a17.js" type="text/javascript"></script>
         </div>
+        }
+      </Fragment>
     ) 
 }
 
