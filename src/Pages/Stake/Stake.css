@@ -6,16 +6,21 @@ a {
 a:hover{
     color: inherit;
 }
+button{
+    outline: none;
+    text-decoration: none;
+    padding: 0;
+}
 
 .css-11sms2e{
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.css-11sms2e, .dashboard-loader > *{
-    margin: auto;
+.dashboard-loader > *{
+    /* margin: auto; */
     z-index: 9999;
-    transform: translateX(50%) translateY(50vh);
+    /* transform: translateX(50%) translateY(50vh); */
 
 }
 .hidden-card{
@@ -24,19 +29,28 @@ a:hover{
 
 .visible-card {
     box-sizing: border-box;
-    height: 15em;
-    text-align: center;
+    /* height: 15em; */
+    /* text-align: center; */
+    display: grid;
+    place-content: center;
+    background-color: none;
+}
+.card{
+    background-color: none;
 }
 .visible-card  .w-button {
-    width: 100% !important;
-    height: 30px !important;
-    background-color: rgb(68, 68, 10);
+    /* width: 100% !important; */
+    /* height: 30px !important; */
+    background-color: rgb(68, 68, 10);;
+    /* width: min-content; */
+    /* grid-gap: 1em; */
 }
 .amount-input{
-    margin-bottom: 5px;
+    /* margin-bottom: 5px; */
     color: black;
     border: none;
-    width: 100%;
+    /* width: 100%; */
+    width: 20em;
 }
 Input {
     border: none;
@@ -49,10 +63,26 @@ Input {
     background-color: #e1b788;
     padding: 5px 0;
     margin: 1em 0;
+    width: 20em;
+    margin: 1em auto;
+}
+.amount-input .stake{   
+    transform: translateY(-10px);
+}
+.amount-input .unstake{
+    background-color: aliceblue;
 }
 .toggle-stake:hover{
     background-color: black;
     color: #E1B788;
+}
+
+.card-wrapper .card{
+    background-color: initial;
+}
+.card-wrapper .staking-card{
+    width: min-content;
+    background-color: #fff;
 }
 
 .connect-wallet{
@@ -63,11 +93,32 @@ Input {
     background-color: black;
     color: #E1B788;
 }
-.wallet-code{
+.wallet-code, .connect-btn{
     float: right;
-    font-size: 3em;
+    transform: translateY(-100%);
+    /* font-size: 3em; */
 }
-
+.btn-color-add {
+    background-color: black;
+    color: #E1B788;
+}
+.rewards-btn{
+    /* display: none; */
+    visibility: hidden;
+}
+.stake-unstake-btn{
+    margin-bottom: 4em;
+    /* gap: 1em; */
+    /* padding: 0 -6em; */
+}
+.flex{
+    display: flex;
+    justify-content: center;
+    align-items: center;    
+}
+.caption-wrapper{
+    margin-bottom: 0;
+}
 @media only screen and (max-width: 460px) {
     .app-navbar-container{
         padding: 2px;
