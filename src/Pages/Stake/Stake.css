@@ -1,0 +1,53 @@
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+a:hover{
+    color: inherit;
+}
+
+.hidden-card{
+    visibility: hidden;
+}
+
+.visible-card {
+    box-sizing: border-box;
+    /* padding: 10em 0; */
+    height: 15em;
+    /* width: 25em; */
+    text-align: center;
+}
+.visible-card  .w-button {
+    width: 100% !important;
+    height: 30px !important;
+    background-color: rgb(68, 68, 10);
+}
+.amount-input{
+    margin-bottom: 5px;
+    color: black;
+    border: none;
+    width: 100%;
+}
+Input {
+    border: none;
+    color: black;
+}
+.toggle-stake{
+    cursor: pointer;
+    color: white;
+    width: 100%;
+    background-color: #E1B788;
+    padding: 5px 0;
+    margin: 1em 0;
+}
+.toggle-stake:hover{
+    background-color: black;
+    color: #E1B788;
+}
+
+.bold-heading{
+    color: black;
+    font-weight: bold;
+    font-size: large;
+}
