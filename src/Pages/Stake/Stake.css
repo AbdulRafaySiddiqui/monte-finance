@@ -24,9 +24,7 @@ a:hover{
 
 .visible-card {
     box-sizing: border-box;
-    /* padding: 10em 0; */
     height: 15em;
-    /* width: 25em; */
     text-align: center;
 }
 .visible-card  .w-button {
@@ -57,8 +55,25 @@ Input {
     color: #E1B788;
 }
 
-.bold-heading{
-    color: black;
-    font-weight: bold;
-    font-size: large;
+.connect-wallet{
+    /* width: max-content; */
+    background-color: #E1B788;
+}
+.connect-wallet:hover {
+    background-color: black;
+    color: #E1B788;
+}
+.wallet-code{
+    float: right;
+    font-size: 3em;
+}
+
+@media only screen and (max-width: 460px) {
+    .app-navbar-container{
+        padding: 2px;
+    }
+    .app-navbar-menu .w-button {
+        padding: 6px;
+        margin: 2px;
+    }
 }
