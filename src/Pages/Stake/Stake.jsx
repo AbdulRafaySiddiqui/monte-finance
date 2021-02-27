@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import logo from "./../images/monte-finance-01.png";
 import smallLogo from "./../images/artboard-color-small.svg";
 import { Link } from 'react-router-dom'
@@ -6,8 +6,11 @@ import "./../css/components.css"
 import "./../css/normalize.css"
 import "./../css/zzz-ff9a17.css"
 import "./Stake.css"
-import { TextField } from '@material-ui/core';
+import { TextField, InputLabel  } from '@material-ui/core';
+// import { Label } from '@material-ui/core';
+
 import styled from 'styled-components'
+import { CircleLoader } from "react-spinners"
 
 import { useWallet } from 'use-wallet'
 import Web3 from 'web3';
@@ -21,14 +24,16 @@ const StyledTextField = styled(TextField)`
     & .MuiInput-underline:after {
         border-bottom: 2px solid #E1B788;
     }
-
 `;
+
+
 const Stake = () => {
   const [isStake, setIsStake] = useState(false);
   const [web3, setWeb3] = useState(null);
   const [error, setError] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [loaderIcon, setLoaderIcon] = useState(true);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
   const [isStaking, setIsStaking] = useState(false);
   const [isUnstaking, setIsUnstaking] = useState(false);
@@ -244,7 +249,10 @@ const Stake = () => {
   }
 
   return (
-    <div className="body">
+    <Fragment>
+      {/* {loader && <CircleLoader className="css-l4r88c dashboard-loader" size={44} color="chocolate"/>} */}
+      {/* {!loader &&  */}
+      <div className="body">
       <div className="app-layout">
         <div className="app-nav-layout">
           <div data-collapse="medium" data-animation="over-left" data-duration="400" data-easing="ease-in-out" data-easing2="ease-in-out" role="banner" className="sidebar-navbar w-nav">
@@ -278,6 +286,8 @@ const Stake = () => {
               <a href="http://www.montefinance.com" className="button-2 w-button">Home</a>
               <a href="https://t.me/MonteFinance" className="button-2 w-button">Telegram</a>
               <a href="https://twitter.com/financemonte" className="button-2 w-button">Twitter</a>
+              {/* <a className="button-2 w-button connect-wallet">Connect Wallet</a> */}
+              
             </div>
           </div>
         </div>
@@ -288,12 +298,16 @@ const Stake = () => {
               <div className="app-main-layout-wrapper header">
                 <div className="page-heading">
                   <h2>Dashboard</h2>
-                  <button
+
+                  <button className="connect-btn"
                     disabled={wallet.status === 'connected' ? true : false}
                     onClick={() => wallet.connect()}>{
-                      wallet.status === 'connected' ?
-                        wallet.account.substring(0, 10) + '...'
-                        : "METAMASK"}
+                      wallet.status === 'connected' && summary.totalSupply ?
+                      //Loader remains-------------------------------------------------------------------------------------------
+                      // <CircleLoader className="css-l4r88c dashboard-loader" size={44} color="chocolate"/> && setTimeout(() => { setLoader(false)}, 700) && 
+                        <div className="app-navbar-menu"> <a className="button-2 w-button connect-wallet"> { wallet.account.substring(0, 10) + '...'}</a></div>
+                        : 
+                        <div className="app-navbar-menu"> <a className="button-2 w-button connect-wallet">Connect Wallet</a></div>}
                   </button>
                   {
                     isLoading ?
@@ -391,13 +405,10 @@ const Stake = () => {
                       <div>
 
                         {/* STAKE / UNSTAKE  */}
-                        {
+                        {/* {
                           isStake ?
                             <div className="col w-col w-col-4 visible-card">
                               <div className="card text-center">
-                                {/* <div className="column-3 w-col w-col-4">
-                            <a href="#" className="button-3 w-button">Unstake</a>
-                        </div>  */}
                                 <p className="boldHeading">STAKE MNT</p>
                                 <StyledTextField
                                   id='value'
@@ -424,28 +435,89 @@ const Stake = () => {
                                 <div className="toggle-stake unstake" onClick={selectMaxSelect}>MAX</div>
                               </div>
                             </div>
-                        }
+                        } */}
 
 
-                        <div className="w-row">
+                        <div className="w-row flex stake-unstake-btn">
+                          {/* //stake work */}
                           <div className="column-2 w-col w-col-4">
-                            <a id="stake-id" onClick={(e) => setIsStake(true)} className="button-3 w-button">Stake</a>
+                            <a id="stake-id" onClick={(e) => { 
+                              setIsStake(true); 
+                              // remains ---------------------------------------------------------
+                              // if (isStake) {
+                              //   document.querySelector("#stake-id").classList.remove("btn-color-add");  
+                              //   document.querySelector("#unstake-id").classList.add("btn-color-add") 
+                              // } else {
+                              //   document.querySelector("#stake-id").classList.add("btn-color-add");
+                              //   document.querySelector("#unstake-id").classList.remove("btn-color-add")                               
+                              // }
+                              } } className="button-3 w-button">Stake</a>
                           </div>
+
+                          {/* unstake work */}
                           <div className="column-3 w-col w-col-4">
-                            <a id="unstake-id" onClick={(e) => setIsStake(false)} className="button-3 w-button">Unstake</a>
+                            <a id="unstake-id" onClick={(e) => {
+                              setIsStake(false);
+                              // remians -----------------------------------------------------------
+                              // isStake ? 
+                              // document.querySelector("#unstake-id").classList.add("btn-color-add") 
+                              // : 
+                              // document.querySelector("#unstake-id").classList.remove("btn-color-add")
+                              }
+                              } className="button-3 w-button">Unstake</a>
                           </div>
+                          <div></div>
+                          {/* <div class="column-4 w-col w-col-4 rewards-btn">
+                            <a href="#" class="button-4 w-button">Rewards</a>
+                          </div> */}
                         </div>
+
+                        <div className="card-wrapper">
+                        <div class="card text-center visible-card">
+                        {
+                          isStake ?
+                              <div className="card text-center staking-card">
+                                <p className="boldHeading">STAKE MNT</p>
+                                <StyledTextField
+                                  id='value'
+                                  className="amount-input"
+                                  placeholder="Enter amount"
+                                  onChange={onStakeAmountChange}
+                                  value={stakeAmount}
+                                  error={stakeAmountError}></StyledTextField>
+                                <div className="toggle-stake stake" onClick={stake}>STAKE</div>
+                                <div className="toggle-stake unstake" onClick={selectMaxSelect}>MAX</div>
+                              </div>
+                            : 
+                              <div className="card text-center staking-card">
+                                <p className="boldHeading">UNSTAKE MNT</p>
+                                <StyledTextField
+                                  id='value'
+                                  className="amount-input"
+                                  placeholder="Enter amount"
+                                  onChange={onUnstakeAmountChange}
+                                  value={unstakeAmount}
+                                  error={unstakeAmountError}></StyledTextField>
+                                <div className="toggle-stake stake" onClick={unstake}>UNSTAKE</div>
+                                <div className="toggle-stake unstake" onClick={selectMaxSelect}>MAX</div>
+                              </div>
+                        }
+                        </div>
+                        </div>
+
+
                       </div>
                     </div>
                   </div>
                   : <div className="app-main-layout-content">
                     <div className="page-tabs-content">
                       <div className="card text-center">
-                        <div className="card-heading center">
+                        <div className="card-heading center caption-wrapper">
                           <div className="caption mb-0">Please connect your wallet to use the Dapp</div>
                         </div>
                       </div>
                     </div>
+                    
                   </div>
               }
 
@@ -457,7 +529,7 @@ const Stake = () => {
                   </div>
                   <div className="footer-right w-col w-col-6">
                     <div className="hint">
-                      <a href="http://www.montefinance.com" target="_blank" className="footer-link">Monte Finance 2021</a>
+                      <a href="http://www.dechains.com" target="_blank" className="footer-link">powered by Dechains</a>
                     </div>
                   </div>
                 </div>
@@ -469,6 +541,10 @@ const Stake = () => {
       <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js?site=6034587d924053386f0cc996" type="text/javascript" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
       <script src="../js/zzz-ff9a17.js" type="text/javascript"></script>
     </div>
+      {/* } */}
+
+    </Fragment>
+
   )
 }
 
